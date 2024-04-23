@@ -1,9 +1,18 @@
 import pandas as pd
 import google.generativeai as genai
+from flask import Flask, render_template
+import pandas as pd
+from google.generativeai import configure, GenerativeModel
+import gensim
+from gensim.parsing.preprocessing import preprocess_string
+import matplotlib.pyplot as plt
+
+# Import libraries (assuming you have them installed)
+
 from google.generativeai import configure, GenerativeModel
 
 # Replace with your Gemini API key
-GEMINI_API_KEY = 'your_api_key'
+GEMINI_API_KEY = 'AIzaSyCaPdOE-mEjnIKt38kvAo69GViSV9Po5hY'
 
 # Configure Gemini API with your key
 configure(api_key=GEMINI_API_KEY)
@@ -97,3 +106,72 @@ def chatbot():
 
 # Run the chatbot
 chatbot()
+
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Ensure plots are displayed inline
+%matplotlib inline
+
+def visualize_distribution(data, column_name):
+    """
+    This function visualizes the distribution of a column in the data.
+
+    Args:
+        data (pd.DataFrame): The clinical trial data.
+        column_name (str): The name of the column to visualize.
+    """
+    data[column_name].value_counts().plot(kind='bar')
+    plt.xlabel(column_name)
+    plt.ylabel("Count")
+    plt.title(f"Distribution of {column_name}")
+    plt.show() # Display the plot
+
+def identify_topics(documents):
+  """
+  This function identifies topics within a list of clinical text documents.
+
+  Args:
+      documents (list): A list of strings containing the clinical text data.
+
+  Returns:
+      list: A list of dominant topics identified within the documents.
+  """
+  processed_docs = [preprocess_string(doc) for doc in documents]
+  dictionary = gensim.corpora.Dictionary(processed_docs)
+  corpus = [dictionary.doc2bow(doc) for doc in documents]
+  lda_model = gensim.models.LdaModel(corpus, id2word=dictionary, num_topics=5)
+  topics = lda_model.print_topics()
+  return topics
+
+import spacy
+
+# Load a pre-trained spaCy model for clinical text processing (consider using a specialized model for better results)
+nlp = spacy.load("en_core_web_sm")
+
+def summarize_clinical_text(text):
+  """
+  This function performs basic NLP tasks to summarize clinical text data.
+
+  Args:
+      text (str): The clinical text data to be summarized.
+
+  Returns:
+      str: A summary of the text containing key entities and potential insights.
+  """
+  doc = nlp(text)
+
+  # Extract named entities like medications and diagnoses
+  entities = [str(ent.text) for ent in doc.ents]
+
+  # Identify potential insights based on sentiment analysis (basic example)
+  sentiment = "positive" if doc.sentiment > 0 else "negative"
+
+  summary = f"The provided text mentions {', '.join(entities)} related to the patient's condition. The overall sentiment seems {sentiment}."
+
+  return summary
+
+# Example usage
+text = "The patient reported feeling better after taking the new medication. They mentioned some initial side effects but overall felt the treatment was effective."
+summary = summarize_clinical_text(text)
+print(summary)
