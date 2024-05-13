@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from google.generativeai import configure, GenerativeModel
 
 # Replace with your Gemini API key
-GEMINI_API_KEY = 'AIzaSyCaPdOE-mEjnIKt38kvAo69GViSV9Po5hY'
+GEMINI_API_KEY = 'your_API_key'
 
 # Configure Gemini API with your key
 configure(api_key=GEMINI_API_KEY)
