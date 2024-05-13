@@ -107,8 +107,6 @@ def chatbot():
 # Run the chatbot
 chatbot()
 
-import matplotlib.pyplot as plt
-import pandas as pd
 
 # Ensure plots are displayed inline
 %matplotlib inline
